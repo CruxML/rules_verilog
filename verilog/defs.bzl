@@ -3,6 +3,7 @@ VerilogModuleInfo = provider(
     fields = {
         "top": "Top module name.",
         "files": "A depset of all necessary Verilog files.",
+        "data_files": "Data files needed.",
     },
 )
 
@@ -11,8 +12,12 @@ def _verilog_module_impl(ctx):
         VerilogModuleInfo(
             top = ctx.attr.top,
             files = depset(
-                direct = ctx.files.srcs + ctx.files.data,
+                direct = ctx.files.srcs,
                 transitive = [dep[VerilogModuleInfo].files for dep in ctx.attr.deps],
+            ),
+            data_files = depset(
+                direct = ctx.files.data,
+                transitive = [dep[VerilogModuleInfo].data_files for dep in ctx.attr.deps],
             ),
         ),
     ]
