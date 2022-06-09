@@ -11,10 +11,10 @@ def _verilog_module_impl(ctx):
         VerilogModuleInfo(
             top = ctx.attr.top,
             files = depset(
-                direct = ctx.files.srcs,
+                direct = ctx.files.srcs + ctx.files.data,
                 transitive = [dep[VerilogModuleInfo].files for dep in ctx.attr.deps],
             ),
-        )
+        ),
     ]
 
 verilog_module = rule(
@@ -24,6 +24,10 @@ verilog_module = rule(
         "srcs": attr.label_list(
             doc = "(System) verilog source files.",
             allow_files = [".v", ".sv"],
+        ),
+        "data": attr.label_list(
+            doc = "Data files.",
+            allow_files = True,
         ),
         "top": attr.string(
             doc = "Top module name.",
